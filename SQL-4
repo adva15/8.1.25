@@ -1,0 +1,104 @@
+.1. כתוב שאילתות SQL ליצירת 3 הטבלאות )יש להשתמש ב Autoincrement )
+שאילתא 1:
+CREATE TABLE students (
+    student_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL
+);
+
+
+שאילתא 2:
+CREATE TABLE courses (
+	course_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic INTEGER NOT NULL,
+	hours INTEGER NOT NULL
+);
+
+שאילתא 3:
+CREATE TABLE grades (
+	student_id INTEGER NOT NULL,
+    course_id  INTEGER NOT NULL,
+	grade INTEGER PRIMARY KEY AUTOINCREMENT,
+	UNIQUE(student_id, course_id)
+  FOREIGN KEY (student_id) REFERENCES students(student_id),
+  FOREIGN KEY (course_id) REFERENCES courses(course_id) 
+	);
+
+
+.2. כתוב שאילתות  להוספת 2 קורסים או יותר
+.כתוב שאילתות  להוספת 2 תלמידים או יותר(
+כעת כתוב שאילתות להוספת ציון לכל תלמיד לכל אחד מהקורסים
+
+הוספת קורסים:
+INSERT INTO Courses (topic, hours) VALUES ('Mathematics', 1);
+INSERT INTO Courses (topic, hours) VALUES ('Physics', 1);
+INSERT INTO Courses (topic, hours) VALUES ('history', 2);
+INSERT INTO Courses (topic, hours) VALUES ('Biology', 1);
+INSERT INTO Courses (topic, hours) VALUES ('literature', 1);
+
+הוספת תלמידים:
+INSERT INTO students (name, email, student_id) VALUES 
+('Emily Cooper', 'Emily.Cooper@gmail.com', '161255'),
+('Taylor Swift', 'TaylorSwift1@walla.com',  '162443'),
+('Michael Johnson', 'michael.brown@gmail.com', '163455'),
+
+הוספת ציון:
+INSERT INTO grades (student_id, course_id, grade) VALUES 
+INSERT INTO grades (student_id, course_id, grade) VALUES ('161255', 1, '85');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('161255', 2, '95');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('161255', 3, '100');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('163455', 1, '75');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('163455', 2, '92');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('163455', 3, '88');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('162443', 1, '80');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('162443', 2, '90');
+INSERT INTO grades (student_id, course_id, grade) VALUES ('162443', 3, '77');
+
+
+.3. כתוב שאילתת SQL המחשבת את ממוצע הציונים לכל קורס בנפרד
+SELECT  c.course_id, AVG(g.grade) AS avg_grade
+FROM   grades g
+JOIN  courses c ON g.course_id = c.course_id
+GROUP BY  c.course_id;
+
+.4 כתוב קוד בפייטון המציג את כל הקורסים
+import sqlite3
+
+conn = sqlite3.connect('שיעור 8.1.25.db')
+cursor = conn.cursor()
+
+cursor.execute("SELECT course_id FROM courses")
+
+courses = cursor.fetchall()
+
+print("List of Courses:")
+for course in courses:
+    print(tuple(course))
+
+conn.close()
+
+.5. כתוב קוד בפייטון הקולט מהמשתמש את נושא הקורס + מס' שעות,
+ומוסיף אותו לטבלת הקורסים
+
+import sqlite3
+
+conn = sqlite3.connect('שיעור 8.1.25.db')
+cursor = conn.cursor()
+
+course_id = input("Enter course: ")
+
+cursor.execute("INSERT INTO courses (topic, hours) VALUES (?, ?)",
+               (topic, hours))
+
+print(f"Course '{topic}' and {hours} added success.")
+conn.commit()
+
+conn.close()
+
+
+
+
+
+
+
+
